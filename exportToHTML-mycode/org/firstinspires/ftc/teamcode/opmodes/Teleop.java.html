@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>Teleop.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Teleop.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org.firstinspires.ftc.teamcode.opmodes</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.acmerobotics.dashboard.config.Config</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.acmerobotics.roadrunner.geometry.Pose2d</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.qualcomm.robotcore.eventloop.opmode.LinearOpMode</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.qualcomm.robotcore.eventloop.opmode.TeleOp</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.qualcomm.robotcore.hardware.DcMotor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.qualcomm.robotcore.hardware.Servo</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive</span><span class="s0">;</span>
+
+<span class="s1">@Config</span>
+<span class="s1">@TeleOp(name = </span><span class="s2">&quot;Teleop&quot;</span><span class="s0">, </span><span class="s1">group = </span><span class="s2">&quot;Linear Opmode&quot;</span><span class="s1">)</span>
+
+<span class="s0">public class </span><span class="s1">Teleop </span><span class="s0">extends </span><span class="s1">LinearOpMode {</span>
+
+    <span class="s1">DcMotor arm</span><span class="s0">;</span>
+    <span class="s1">DcMotor slide</span><span class="s0">;</span>
+    <span class="s0">private static final double </span><span class="s1">DEFAULT_POSITION = </span><span class="s3">0</span><span class="s0">;;</span>
+    <span class="s1">SampleMecanumDrive drive</span><span class="s0">;</span>
+    <span class="s0">static float </span><span class="s1">speed=</span><span class="s3">0.5f</span><span class="s0">;</span>
+    <span class="s0">private void </span><span class="s1">wait(</span><span class="s0">int </span><span class="s1">ms)</span>
+    <span class="s1">{</span>
+        <span class="s0">try</span><span class="s1">{</span>
+            <span class="s1">Thread.sleep(ms)</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(InterruptedException ignored){</span>
+            <span class="s4">//nu face nimic</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">runOpMode() </span><span class="s0">throws </span><span class="s1">InterruptedException {</span>
+        <span class="s1">telemetry.addData(</span><span class="s2">&quot;Gamepad1 Left Stick Y&quot;</span><span class="s0">, </span><span class="s1">gamepad1.left_stick_y)</span><span class="s0">;</span>
+        <span class="s1">telemetry.addData(</span><span class="s2">&quot;Gamepad1 Left Stick X&quot;</span><span class="s0">, </span><span class="s1">gamepad1.left_stick_x)</span><span class="s0">;</span>
+        <span class="s1">telemetry.addData(</span><span class="s2">&quot;Gamepad1 Right Stick X&quot;</span><span class="s0">, </span><span class="s1">gamepad1.right_stick_x)</span><span class="s0">;</span>
+        <span class="s1">telemetry.addData(</span><span class="s2">&quot;Gamepad2 A Button&quot;</span><span class="s0">, </span><span class="s1">gamepad2.a)</span><span class="s0">;</span>
+        <span class="s1">telemetry.addData(</span><span class="s2">&quot;Gamepad2 B Button&quot;</span><span class="s0">, </span><span class="s1">gamepad2.b)</span><span class="s0">;</span>
+        <span class="s1">telemetry.update()</span><span class="s0">;</span>
+        <span class="s1">arm = hardwareMap.get(DcMotor.</span><span class="s0">class, </span><span class="s2">&quot;arm&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">slide = hardwareMap.get(DcMotor.</span><span class="s0">class, </span><span class="s2">&quot;slide&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">drive = </span><span class="s0">new </span><span class="s1">SampleMecanumDrive(hardwareMap)</span><span class="s0">;</span>
+        <span class="s1">waitForStart()</span><span class="s0">;</span>
+        <span class="s0">while</span><span class="s1">(opModeIsActive() &amp;&amp; !isStopRequested()) {</span>
+            <span class="s1">drive.setWeightedDrivePower(</span>
+                    <span class="s0">new </span><span class="s1">Pose2d(</span>
+                            <span class="s1">gamepad1.left_stick_y * speed</span><span class="s0">,</span>
+                            <span class="s1">gamepad1.left_stick_x * speed</span><span class="s0">,</span>
+                            <span class="s1">gamepad1.right_stick_x</span>
+                    <span class="s1">)</span>
+            <span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">drive.update()</span><span class="s0">;</span>
+            <span class="s0">if</span><span class="s1">(gamepad2.right_stick_x) {</span>
+                <span class="s1">arm.setPower(gamepad2.right_stick_x)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+          <span class="s4">//  idle();</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
